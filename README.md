@@ -31,3 +31,5 @@ main.go
 - Add your environment variable in file `.env`
 - Run go run main.go
 - Run page localhost:8080/{endpoint} in your postman
+
+
