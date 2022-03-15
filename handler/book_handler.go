@@ -109,3 +109,17 @@ func (b *bookHandler) UpdateBook(gc *gin.Context) {
 
 	gc.JSON(http.StatusOK, result)
 }
+
+func (b *bookHandler) DeleteBook(gc *gin.Context) {
+	gc.Header("Content-Type", "application/json")
+	id, _ := strconv.Atoi(gc.Param("bookID"))
+
+
+	result, err := b.usecase.DeleteBook(id)
+	if err != nil {
+		gc.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	gc.JSON(http.StatusOK, result)
+}
