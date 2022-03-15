@@ -13,6 +13,7 @@ type BookUsecase interface {
 	GetByID(id int) (*transport.GetBookResponse, *transport.ResponseError)
 	AddBook(data transport.InsertBook) (*transport.GeneralResponse, *transport.ResponseError)
 	UpdateBook(id int, data transport.UpdateBook) (*transport.GeneralResponse, *transport.ResponseError)
+	DeleteBook(id int) (*transport.GeneralResponse, *transport.ResponseError)
 }
 
 type bookUsecase struct {
@@ -118,6 +119,33 @@ func (b *bookUsecase) UpdateBook(id int, data transport.UpdateBook) (*transport.
 
 	res := &transport.GeneralResponse{
 		Message: "Success to update book : " + createPayload.Name + ".",
+	}
+
+	return res, nil
+}
+
+func (b *bookUsecase) DeleteBook(id int) (*transport.GeneralResponse, *transport.ResponseError) {
+	result, errBook := b.repository.GetByID(id)
+
+	if errBook != nil {
+		responseError := &transport.ResponseError{
+			Message: "Data not found, please check your request.",
+			Status:  http.StatusNotFound,
+		}
+		return nil, responseError
+	}
+
+	err := b.repository.DeleteBook(id)
+	if err != nil {
+		response := &transport.ResponseError{
+			Message: "Un Processable Entity",
+			Status:  http.StatusUnprocessableEntity,
+		}
+		return nil, response
+	}
+
+	res := &transport.GeneralResponse{
+		Message: "Success to delete " + result.Name + " book",
 	}
 
 	return res, nil

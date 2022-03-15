@@ -10,6 +10,7 @@ type BookRepository interface {
 	GetByID(id int) (*entity.Book, error)
 	AddBook(payload entity.Book) error
 	UpdateBook(payload entity.Book) error
+	DeleteBook(id int) error
 }
 
 type bookRepository struct {
@@ -65,6 +66,16 @@ func (b *bookRepository) AddBook(payload entity.Book) error {
 
 func (b *bookRepository) UpdateBook(payload entity.Book) error {
 	_, err := b.DB.Exec("UPDATE tbl_books SET book_name = ?, book_creator = ? WHERE book_id = ?", payload.Name, payload.Creator, payload.Id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *bookRepository) DeleteBook(id int) error {
+	_, err:= b.DB.Exec("DELETE FROM tbl_books WHERE book_id = ?", id)
 
 	if err != nil {
 		return err
